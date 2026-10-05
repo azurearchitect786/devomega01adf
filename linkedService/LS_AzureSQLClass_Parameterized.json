@@ -1,0 +1,23 @@
+{
+	"name": "LS_AzureSQLClass_Parameterized",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"DBName": {
+				"type": "string"
+			}
+		},
+		"annotations": [
+			"Parameterized",
+			"CrossEnv"
+		],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sql-server-etnd-7682.database.windows.net",
+			"database": "@{linkedService().DBName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SystemAssignedManagedIdentity"
+		}
+	}
+}

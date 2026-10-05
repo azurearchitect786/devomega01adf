@@ -1,0 +1,163 @@
+{
+	"name": "BidirectionalSync",
+	"properties": {
+		"activities": [
+			{
+				"name": "SQL_To_Cosmos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Table_AzureSQL_Class",
+						"type": "DatasetReference",
+						"parameters": {
+							"db_name": {
+								"value": "@pipeline().parameters.sql_db_name",
+								"type": "Expression"
+							},
+							"table_name": {
+								"value": "@pipeline().parameters.sql_source_table_name",
+								"type": "Expression"
+							},
+							"schema_name": {
+								"value": "@pipeline().parameters.sql_schema_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Cosmso_Class_Parameterized",
+						"type": "DatasetReference",
+						"parameters": {
+							"cosmos_db_name": {
+								"value": "@pipeline().parameters.cosmos_db_name",
+								"type": "Expression"
+							},
+							"cosmos_container_name": {
+								"value": "@pipeline().parameters.cosmos_destination_container_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Cosmos_To_SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SQL_To_Cosmos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CosmosDbSqlApiSource",
+						"query": "select c.ConfigID, c.TargetValue from config_container c",
+						"preferredRegions": []
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Cosmso_Class_Parameterized",
+						"type": "DatasetReference",
+						"parameters": {
+							"cosmos_db_name": {
+								"value": "@pipeline().parameters.cosmos_db_name",
+								"type": "Expression"
+							},
+							"cosmos_container_name": {
+								"value": "@pipeline().parameters.cosmos_source_container_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Table_AzureSQL_Class",
+						"type": "DatasetReference",
+						"parameters": {
+							"db_name": {
+								"value": "@pipeline().parameters.sql_db_name",
+								"type": "Expression"
+							},
+							"table_name": {
+								"value": "@pipeline().parameters.sql_destination_table_name",
+								"type": "Expression"
+							},
+							"schema_name": {
+								"value": "@pipeline().parameters.sql_schema_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"sql_db_name": {
+				"type": "string"
+			},
+			"cosmos_db_name": {
+				"type": "string"
+			},
+			"sql_source_table_name": {
+				"type": "string"
+			},
+			"cosmos_source_container_name": {
+				"type": "string"
+			},
+			"sql_schema_name": {
+				"type": "string"
+			},
+			"sql_destination_table_name": {
+				"type": "string"
+			},
+			"cosmos_destination_container_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-10-05T07:28:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

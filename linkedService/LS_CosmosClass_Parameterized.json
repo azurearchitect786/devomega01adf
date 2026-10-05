@@ -1,0 +1,19 @@
+{
+	"name": "LS_CosmosClass_Parameterized",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"CosmosDBName": {
+				"type": "string"
+			}
+		},
+		"annotations": [
+			"Parameterized"
+		],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"accountEndpoint": "https://cosmosadflabs.documents.azure.com:443/",
+			"database": "@{linkedService().CosmosDBName}"
+		}
+	}
+}

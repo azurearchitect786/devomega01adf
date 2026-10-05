@@ -1,0 +1,35 @@
+{
+	"name": "DS_Cosmso_Class_Parameterized",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_CosmosClass_Parameterized",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"CosmosDBName": {
+					"value": "@dataset().cosmos_db_name",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"cosmos_db_name": {
+				"type": "string"
+			},
+			"cosmos_container_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [
+			"Parameterized"
+		],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": {
+				"value": "@dataset().cosmos_container_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

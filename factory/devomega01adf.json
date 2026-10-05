@@ -1,0 +1,28 @@
+{
+	"name": "devomega01adf",
+	"properties": {
+		"globalConfigurations": {
+			"mountedConfiguration": [
+				{
+					"workspaceId": "3575cc13-360b-4725-af56-18c559791ecf",
+					"artifactId": "75215a83-82d4-439c-85c5-7b1f71453c7a",
+					"type": "auto-provision"
+				},
+				{
+					"workspaceId": "9cd416f8-3b0d-4b92-a84b-adc2d4188cab",
+					"artifactId": "29db530a-6ff8-4d40-a75d-2f5d905cce31"
+				}
+			]
+		},
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "759fa0ec-9691-48e7-a598-74ac42254a60",
+		"tenantId": "61cfbac0-31b5-4fa9-9f52-4b718e70bd9e"
+	}
+}
