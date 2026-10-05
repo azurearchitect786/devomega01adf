@@ -131,6 +131,75 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Cosmos_To_SQL_copy1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Cosmos_To_SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CosmosDbSqlApiSource",
+						"query": "select c.ConfigID, c.TargetValue from config_container c",
+						"preferredRegions": []
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Cosmso_Class_Parameterized",
+						"type": "DatasetReference",
+						"parameters": {
+							"cosmos_db_name": {
+								"value": "@pipeline().parameters.cosmos_db_name",
+								"type": "Expression"
+							},
+							"cosmos_container_name": {
+								"value": "@pipeline().parameters.cosmos_source_container_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Table_AzureSQL_Class",
+						"type": "DatasetReference",
+						"parameters": {
+							"db_name": {
+								"value": "@pipeline().parameters.sql_db_name",
+								"type": "Expression"
+							},
+							"table_name": {
+								"value": "@pipeline().parameters.sql_destination_table_name",
+								"type": "Expression"
+							},
+							"schema_name": {
+								"value": "@pipeline().parameters.sql_schema_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
